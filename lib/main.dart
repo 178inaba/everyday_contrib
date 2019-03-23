@@ -1,54 +1,46 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:github/server.dart';
 
-void main() => runApp(App());
+GitHub github = createGitHubClient();
+
+Future<Repository> fetchRepo() async {
+  return await github.repositories.getRepository(new RepositorySlug("octocat", "Hello-World"));
+}
+
+void main() => runApp(App(repo: fetchRepo()));
 
 class App extends StatelessWidget {
+  final Future<Repository> repo;
+
+  App({Key key, this.repo}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Everyday Contrib',
+      title: 'Fetch Data Example',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Fetch Data Example'),
+        ),
+        body: Center(
+          child: FutureBuilder<Repository>(
+            future: repo,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Text(snapshot.data.description);
+              } else if (snapshot.hasError) {
+                return Text("${snapshot.error}");
+              }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    var github = createGitHubClient();
-
-    github.repositories.getRepository(new RepositorySlug("DirectMyFile", "github.dart")).then((Repository repo) {
-    });
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              'test',
-              style: Theme.of(context).textTheme.display1,
-            ),
-          ],
+              // By default, show a loading spinner
+              return CircularProgressIndicator();
+            },
+          ),
         ),
       ),
     );
