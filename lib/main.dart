@@ -6,7 +6,8 @@ import 'package:github/server.dart';
 GitHub github = createGitHubClient();
 
 Future<Repository> fetchRepo() async {
-  return await github.repositories.getRepository(new RepositorySlug("octocat", "Hello-World"));
+  return await github.repositories
+      .getRepository(new RepositorySlug("octocat", "Hello-World"));
 }
 
 void main() => runApp(App(repo: fetchRepo()));
