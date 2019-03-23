@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:github/server.dart';
 
 void main() => runApp(App());
 
@@ -27,6 +28,11 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+    var github = createGitHubClient();
+
+    github.repositories.getRepository(new RepositorySlug("DirectMyFile", "github.dart")).then((Repository repo) {
+    });
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
