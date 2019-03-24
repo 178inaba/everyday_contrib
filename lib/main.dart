@@ -69,12 +69,11 @@ class ContribState extends State<ContribPage> {
   Future<List<Contrib>> _contribs() async {
     final response =
         await http.get("https://github-contributions-api.now.sh/v1/178inaba");
-    final contributions = json
-        .decode(response.body)['contributions']
-        .cast<Map<String, dynamic>>();
-    return contributions
-        .map<Contrib>((json) => Contrib.fromJson(json))
-        .toList();
+    final contribJson = jsonDecode(response.body)['contributions'].cast<Map<String, dynamic>>();
+    final contribList = contribJson.map<Contrib>((json) => Contrib.fromJson(json)).toList();
+    contribList.removeWhere((Contrib item) => item.date.compareTo(DateTime.now()) > 0);
+
+    return contribList;
   }
 
   void _refreshContribs() async {
