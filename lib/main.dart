@@ -94,7 +94,8 @@ class Contrib {
     return Contrib(
       date: DateTime.parse(json['date']),
       count: json['count'] as int,
-      color: Color(int.parse(json['color'].replaceAll(new RegExp(r'#'), '0xFF'))),
+      color:
+          Color(int.parse(json['color'].replaceAll(new RegExp(r'#'), '0xFF'))),
     );
   }
 }
