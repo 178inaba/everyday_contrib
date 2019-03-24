@@ -10,9 +10,8 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Fetch Data Example',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.lightGreen,
       ),
       home: ContribPage(),
     );
@@ -51,7 +50,9 @@ class ContribState extends State<ContribPage> {
                   ),
                   itemCount: snapshot.data.length,
                   itemBuilder: (context, index) {
-                    return Text(snapshot.data[index].date.toString());
+                    return Container(
+                      color: snapshot.data[index].color,
+                    );
                   },
                 )
               : Center(child: CircularProgressIndicator());
