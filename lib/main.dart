@@ -69,9 +69,24 @@ class ContribState extends State<ContribPage> {
   Future<List<Contrib>> _contribs() async {
     final response =
         await http.get("https://github-contributions-api.now.sh/v1/178inaba");
-    final contribJson = jsonDecode(response.body)['contributions'].cast<Map<String, dynamic>>();
-    final contribList = contribJson.map<Contrib>((json) => Contrib.fromJson(json)).toList();
-    contribList.removeWhere((Contrib item) => item.date.compareTo(DateTime.now()) > 0);
+    final contribJson =
+        jsonDecode(response.body)['contributions'].cast<Map<String, dynamic>>();
+    final contribList =
+        contribJson.map<Contrib>((json) => Contrib.fromJson(json)).toList();
+    contribList
+        .removeWhere((Contrib item) => item.date.compareTo(DateTime.now()) > 0);
+
+    final today = DateTime.now();
+    if (today.weekday != DateTime.saturday) {
+      var pos = today.weekday + 1;
+      if (today.weekday == DateTime.sunday) {
+        pos = 1;
+      }
+
+      final ec = Contrib(date: today, count: 0, color: Colors.white);
+      final insertList = new List<Contrib>.filled(7 - pos, ec);
+      contribList.insertAll(pos, insertList);
+    }
 
     return contribList;
   }
