@@ -24,12 +24,12 @@ class ContribPage extends StatefulWidget {
 }
 
 class ContribState extends State<ContribPage> {
-  Future<List<Contrib>> contribs;
+  Future<List<Contrib>> contribList;
 
   @override
   void initState() {
     super.initState();
-    contribs = _contribs();
+    contribList = _contribList();
   }
 
   @override
@@ -39,7 +39,7 @@ class ContribState extends State<ContribPage> {
         title: Text('Everyday Contrib'),
       ),
       body: FutureBuilder<List<Contrib>>(
-        future: contribs,
+        future: contribList,
         builder: (context, snapshot) {
           if (snapshot.hasError) print(snapshot.error);
 
@@ -59,14 +59,14 @@ class ContribState extends State<ContribPage> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _refreshContribs,
+        onPressed: _refreshContribList,
         tooltip: 'Refresh',
         child: Icon(Icons.refresh),
       ),
     );
   }
 
-  Future<List<Contrib>> _contribs() async {
+  Future<List<Contrib>> _contribList() async {
     final response =
         await http.get("https://github-contributions-api.now.sh/v1/178inaba");
     final contribJson =
@@ -91,9 +91,9 @@ class ContribState extends State<ContribPage> {
     return contribList;
   }
 
-  void _refreshContribs() async {
+  void _refreshContribList() async {
     setState(() {
-      contribs = _contribs();
+      contribList = _contribList();
     });
   }
 }
