@@ -10,11 +10,8 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.lightGreen,
-      ),
-      home: ContribPage(),
-    );
+        theme: ThemeData(primarySwatch: Colors.lightGreen),
+        home: ContribPage());
   }
 }
 
@@ -25,6 +22,7 @@ class ContribPage extends StatefulWidget {
 
 class ContribState extends State<ContribPage> {
   Future<List<Contrib>> contribList;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -35,29 +33,49 @@ class ContribState extends State<ContribPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Everyday Contrib'),
-      ),
-      body: FutureBuilder<List<Contrib>>(
-        future: contribList,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) print(snapshot.error);
-
-          return snapshot.hasData
-              ? GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 7,
-                  ),
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      color: snapshot.data[index].color,
-                    );
+      appBar: AppBar(title: Text('Everyday Contrib')),
+      body: Column(children: [
+        Form(
+            key: _formKey,
+            child: Row(
+              //crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(child:TextFormField(
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter GitHub user id.';
+                    }
                   },
-                )
-              : Center(child: CircularProgressIndicator());
-        },
-      ),
+                )),
+                RaisedButton(
+                  onPressed: () {
+                    if (_formKey.currentState.validate()) {
+                      // TODO Access url.
+                    }
+                  },
+                  child: Text('Submit'),
+                ),
+              ],
+            )),
+        Expanded(
+            child: FutureBuilder<List<Contrib>>(
+                future: contribList,
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) print(snapshot.error);
+
+                  return snapshot.hasData
+                      ? GridView.builder(
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 7),
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (context, index) {
+                            return Container(color: snapshot.data[index].color);
+                          })
+                      : Center(child: CircularProgressIndicator());
+                }))
+      ]),
+      // TODO Remove
       floatingActionButton: FloatingActionButton(
         onPressed: _refreshContribList,
         tooltip: 'Refresh',
@@ -107,10 +125,9 @@ class Contrib {
 
   factory Contrib.fromJson(Map<String, dynamic> json) {
     return Contrib(
-      date: DateTime.parse(json['date']),
-      count: json['count'] as int,
-      color:
-          Color(int.parse(json['color'].replaceAll(new RegExp(r'#'), '0xFF'))),
-    );
+        date: DateTime.parse(json['date']),
+        count: json['count'] as int,
+        color: Color(
+            int.parse(json['color'].replaceAll(new RegExp(r'#'), '0xFF'))));
   }
 }
