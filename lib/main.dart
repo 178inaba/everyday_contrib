@@ -36,7 +36,7 @@ class ContribState extends State<ContribPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Startup Name Generator'),
+        title: Text('Everyday Contrib'),
       ),
       body: FutureBuilder<List<Contrib>>(
         future: contribs,
