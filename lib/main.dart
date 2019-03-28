@@ -78,14 +78,14 @@ class ContribState extends State<ContribPage> {
 
     final today = DateTime.now();
     if (today.weekday != DateTime.saturday) {
-      var pos = today.weekday + 1;
+      var cnt = 6 - today.weekday;
       if (today.weekday == DateTime.sunday) {
-        pos = 1;
+        cnt = 6;
       }
 
       final ec = Contrib(date: today, count: 0, color: Colors.white);
-      final insertList = new List<Contrib>.filled(7 - pos, ec);
-      contribList.insertAll(pos, insertList);
+      final insertList = new List<Contrib>.filled(cnt, ec);
+      contribList.insertAll(0, insertList);
     }
 
     return contribList;
