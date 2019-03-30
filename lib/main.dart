@@ -11,82 +11,72 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         theme: ThemeData(primarySwatch: Colors.lightGreen),
-        home: ContribPage());
+        home: Scaffold(
+            appBar: AppBar(title: Text('Everyday Contrib')),
+            body: ContribGrid()));
   }
 }
 
-class ContribPage extends StatefulWidget {
+class ContribGrid extends StatefulWidget {
   @override
   ContribState createState() => new ContribState();
 }
 
-class ContribState extends State<ContribPage> {
-  Future<List<Contrib>> contribList;
+class ContribState extends State<ContribGrid> {
+  Future<List<Contrib>> _contribList;
   final _formKey = GlobalKey<FormState>();
-
-  @override
-  void initState() {
-    super.initState();
-    contribList = _contribList();
-  }
+  final _textController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Everyday Contrib')),
-      body: Column(children: [
-        Form(
-            key: _formKey,
-            child: Row(
-              //crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(child:TextFormField(
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter GitHub user id.';
-                    }
-                  },
-                )),
-                RaisedButton(
-                  onPressed: () {
-                    if (_formKey.currentState.validate()) {
-                      // TODO Access url.
-                    }
-                  },
-                  child: Text('Submit'),
-                ),
-              ],
-            )),
-        Expanded(
-            child: FutureBuilder<List<Contrib>>(
-                future: contribList,
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) print(snapshot.error);
+    return Column(children: [
+      Form(
+          key: _formKey,
+          child: Row(
+            //crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                  child: TextFormField(
+                // TODO placeholder
+                controller: _textController,
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please enter your GitHub user id.';
+                  }
+                },
+              )),
+              RaisedButton(
+                onPressed: () {
+                  if (_formKey.currentState.validate()) {
+                    _refreshContribList(_textController.text);
+                  }
+                },
+                child: Text('Submit'),
+              ),
+            ],
+          )),
+      Expanded(
+          child: FutureBuilder<List<Contrib>>(
+              future: _contribList,
+              builder: (context, snapshot) {
+                if (snapshot.hasError) print(snapshot.error);
 
-                  return snapshot.hasData
-                      ? GridView.builder(
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 7),
-                          itemCount: snapshot.data.length,
-                          itemBuilder: (context, index) {
-                            return Container(color: snapshot.data[index].color);
-                          })
-                      : Center(child: CircularProgressIndicator());
-                }))
-      ]),
-      // TODO Remove
-      floatingActionButton: FloatingActionButton(
-        onPressed: _refreshContribList,
-        tooltip: 'Refresh',
-        child: Icon(Icons.refresh),
-      ),
-    );
+                return snapshot.hasData
+                    ? GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 7),
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (context, index) {
+                          return Container(color: snapshot.data[index].color);
+                        })
+                    : Center(child: Text('Please enter your GitHub user id.'));
+              }))
+    ]);
   }
 
-  Future<List<Contrib>> _contribList() async {
+  Future<List<Contrib>> _getContribList(String userID) async {
     final response =
-        await http.get("https://github-contributions-api.now.sh/v1/178inaba");
+        await http.get("https://github-contributions-api.now.sh/v1/" + userID);
     final contribJson =
         jsonDecode(response.body)['contributions'].cast<Map<String, dynamic>>();
     final contribList =
@@ -109,9 +99,9 @@ class ContribState extends State<ContribPage> {
     return contribList;
   }
 
-  void _refreshContribList() async {
+  void _refreshContribList(String userID) async {
     setState(() {
-      contribList = _contribList();
+      _contribList = _getContribList(userID);
     });
   }
 }
