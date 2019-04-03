@@ -67,7 +67,9 @@ class ContribState extends State<ContribGrid> {
                             crossAxisCount: 7),
                         itemCount: snapshot.data.length,
                         itemBuilder: (context, index) {
-                          return Container(color: snapshot.data[index].color);
+                          return Container(
+                              color: snapshot.data[index].color,
+                              margin: EdgeInsets.all(3));
                         })
                     : Center(child: Text('Please enter your GitHub user id.'));
               }))
@@ -91,7 +93,7 @@ class ContribState extends State<ContribGrid> {
         cnt = 6;
       }
 
-      final ec = Contrib(date: today, count: 0, color: Colors.white);
+      final ec = Contrib(date: today, count: 0);
       final insertList = new List<Contrib>.filled(cnt, ec);
       contribList.insertAll(0, insertList);
     }
