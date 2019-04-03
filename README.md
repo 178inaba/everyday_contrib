@@ -1,4 +1,4 @@
-# everyday_contrib
+# Everyday Contrib
 
 A new Flutter application.
 
