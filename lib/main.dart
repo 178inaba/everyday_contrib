@@ -19,7 +19,7 @@ class App extends StatelessWidget {
 
 class ContribGrid extends StatefulWidget {
   @override
-  ContribState createState() => new ContribState();
+  ContribState createState() => ContribState();
 }
 
 class ContribState extends State<ContribGrid> {
@@ -77,8 +77,7 @@ class ContribState extends State<ContribGrid> {
         cnt = 6;
       }
 
-      final ec = Contrib();
-      final insertList = new List<Contrib>.filled(cnt, ec);
+      final insertList = List<Contrib>.filled(cnt, Contrib());
       contribList.insertAll(0, insertList);
     }
 
@@ -93,19 +92,31 @@ class ContribState extends State<ContribGrid> {
             if (snapshot.hasError) return Center(child: Text(snapshot.error));
 
             if (snapshot.connectionState == ConnectionState.done)
-              return GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 7),
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                        color: snapshot.data[index].color,
-                        margin: EdgeInsets.all(3));
-                  });
+              return _getContribView(snapshot.data);
 
             return Center(child: CircularProgressIndicator());
           });
     });
+  }
+
+  GridView _getContribView(List<Contrib> contribList) {
+    return GridView.builder(
+        gridDelegate:
+            SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 7),
+        itemCount: contribList.length,
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            onTap: () {
+              Scaffold.of(context).hideCurrentSnackBar();
+              Scaffold.of(context).showSnackBar(SnackBar(
+                // TODO text
+                content: Text(contribList[index].date.toString()),
+              ));
+            },
+            child: Container(
+                color: contribList[index].color, margin: EdgeInsets.all(3)),
+          );
+        });
   }
 }
 
@@ -120,7 +131,7 @@ class Contrib {
     return Contrib(
         date: DateTime.parse(json['date']),
         count: json['count'] as int,
-        color: Color(
-            int.parse(json['color'].replaceAll(new RegExp(r'#'), '0xFF'))));
+        color:
+            Color(int.parse(json['color'].replaceAll(RegExp(r'#'), '0xFF'))));
   }
 }
