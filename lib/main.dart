@@ -23,9 +23,10 @@ class ContribGrid extends StatefulWidget {
 }
 
 class ContribState extends State<ContribGrid> {
-  Future<List<Contrib>> _contribList;
   final _formKey = GlobalKey<FormState>();
   final _textController = TextEditingController();
+  Widget _contribSection =
+      Center(child: Text('Please enter your GitHub user id.'));
 
   @override
   Widget build(BuildContext context) {
@@ -55,24 +56,7 @@ class ContribState extends State<ContribGrid> {
               ),
             ],
           )),
-      Expanded(
-          child: FutureBuilder<List<Contrib>>(
-              future: _contribList,
-              builder: (context, snapshot) {
-                if (snapshot.hasError) print(snapshot.error);
-
-                return snapshot.hasData
-                    ? GridView.builder(
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 7),
-                        itemCount: snapshot.data.length,
-                        itemBuilder: (context, index) {
-                          return Container(
-                              color: snapshot.data[index].color,
-                              margin: EdgeInsets.all(3));
-                        })
-                    : Center(child: Text('Please enter your GitHub user id.'));
-              }))
+      Expanded(child: _contribSection)
     ]);
   }
 
@@ -93,7 +77,7 @@ class ContribState extends State<ContribGrid> {
         cnt = 6;
       }
 
-      final ec = Contrib(date: today, count: 0);
+      final ec = Contrib();
       final insertList = new List<Contrib>.filled(cnt, ec);
       contribList.insertAll(0, insertList);
     }
@@ -103,7 +87,23 @@ class ContribState extends State<ContribGrid> {
 
   void _refreshContribList(String userID) async {
     setState(() {
-      _contribList = _getContribList(userID);
+      _contribSection = FutureBuilder<List<Contrib>>(
+          future: _getContribList(userID),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) return Center(child: Text(snapshot.error));
+
+            return snapshot.connectionState == ConnectionState.done
+                ? GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 7),
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                          color: snapshot.data[index].color,
+                          margin: EdgeInsets.all(3));
+                    })
+                : Center(child: CircularProgressIndicator());
+          });
     });
   }
 }
