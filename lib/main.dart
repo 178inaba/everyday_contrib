@@ -23,41 +23,38 @@ class ContribGrid extends StatefulWidget {
 }
 
 class ContribState extends State<ContribGrid> {
+  static final _promptMsg = 'Please enter your GitHub user id.';
   final _formKey = GlobalKey<FormState>();
   final _textController = TextEditingController();
-  Widget _contribSection =
-      Center(child: Text('Please enter your GitHub user id.'));
+  Widget _contribSection = Center(child: Text(_promptMsg));
 
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      Form(
-          key: _formKey,
-          child: Row(
-            //crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                  child: TextFormField(
-                // TODO placeholder
-                controller: _textController,
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter your GitHub user id.';
-                  }
-                },
-              )),
-              RaisedButton(
-                onPressed: () {
-                  if (_formKey.currentState.validate()) {
-                    _refreshContribList(_textController.text);
-                  }
-                },
-                child: Text('Submit'),
-              ),
-            ],
-          )),
+      Form(key: _formKey, child: _idInputRow()),
       Expanded(child: _contribSection)
     ]);
+  }
+
+  Row _idInputRow() {
+    return Row(
+      children: [
+        Expanded(
+            child: TextFormField(
+          controller: _textController,
+          validator: (value) {
+            if (value.isEmpty) return _promptMsg;
+          },
+        )),
+        RaisedButton(
+          onPressed: () {
+            if (_formKey.currentState.validate())
+              _refreshContribList(_textController.text);
+          },
+          child: Text('Submit'),
+        ),
+      ],
+    );
   }
 
   Future<List<Contrib>> _getContribList(String userID) async {
@@ -73,9 +70,7 @@ class ContribState extends State<ContribGrid> {
     final today = DateTime.now();
     if (today.weekday != DateTime.saturday) {
       var cnt = 6 - today.weekday;
-      if (today.weekday == DateTime.sunday) {
-        cnt = 6;
-      }
+      if (today.weekday == DateTime.sunday) cnt = 6;
 
       final insertList = List<Contrib>.filled(cnt, Contrib());
       contribList.insertAll(0, insertList);
@@ -107,8 +102,9 @@ class ContribState extends State<ContribGrid> {
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () {
-              Scaffold.of(context).hideCurrentSnackBar();
-              Scaffold.of(context).showSnackBar(SnackBar(
+              var s = Scaffold.of(context);
+              s.hideCurrentSnackBar();
+              s.showSnackBar(SnackBar(
                 // TODO text
                 content: Text(contribList[index].date.toString()),
               ));
