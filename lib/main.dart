@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -105,8 +106,8 @@ class ContribState extends State<ContribGrid> {
               var s = Scaffold.of(context);
               s.hideCurrentSnackBar();
               s.showSnackBar(SnackBar(
-                // TODO text
-                content: Text(contribList[index].date.toString()),
+                content: Text(
+                    "${contribList[index].count} contributions on ${DateFormat.yMMMd().format(contribList[index].date)}"),
               ));
             },
             child: Container(
