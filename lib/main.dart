@@ -92,17 +92,18 @@ class ContribState extends State<ContribGrid> {
           builder: (context, snapshot) {
             if (snapshot.hasError) return Center(child: Text(snapshot.error));
 
-            return snapshot.connectionState == ConnectionState.done
-                ? GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 7),
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (context, index) {
-                      return Container(
-                          color: snapshot.data[index].color,
-                          margin: EdgeInsets.all(3));
-                    })
-                : Center(child: CircularProgressIndicator());
+            if (snapshot.connectionState == ConnectionState.done)
+              return GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 7),
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                        color: snapshot.data[index].color,
+                        margin: EdgeInsets.all(3));
+                  });
+
+            return Center(child: CircularProgressIndicator());
           });
     });
   }
