@@ -14,16 +14,16 @@ class App extends StatelessWidget {
         theme: ThemeData(primarySwatch: Colors.lightGreen),
         home: Scaffold(
             appBar: AppBar(title: Text('Everyday Contrib')),
-            body: ContribGrid()));
+            body: ContribWidget()));
   }
 }
 
-class ContribGrid extends StatefulWidget {
+class ContribWidget extends StatefulWidget {
   @override
-  ContribState createState() => ContribState();
+  ContribWidgetState createState() => ContribWidgetState();
 }
 
-class ContribState extends State<ContribGrid> {
+class ContribWidgetState extends State<ContribWidget> {
   static final _promptMsg = 'Please enter your GitHub user id.';
   final _formKey = GlobalKey<FormState>();
   final _textController = TextEditingController();
@@ -88,14 +88,14 @@ class ContribState extends State<ContribGrid> {
             if (snapshot.hasError) return Center(child: Text(snapshot.error));
 
             if (snapshot.connectionState == ConnectionState.done)
-              return _getContribView(snapshot.data);
+              return _getContribGrid(snapshot.data);
 
             return Center(child: CircularProgressIndicator());
           });
     });
   }
 
-  GridView _getContribView(List<Contrib> contribList) {
+  GridView _getContribGrid(List<Contrib> contribList) {
     return GridView.builder(
         gridDelegate:
             SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 7),
