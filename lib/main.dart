@@ -38,31 +38,29 @@ class ContribWidgetState extends State<ContribWidget> {
   }
 
   Row _idInputRow() {
-    return Row(
-      children: [
-        Expanded(
-            child: TextFormField(
-          decoration: InputDecoration(
-              icon: Icon(Octicons.getIconData("mark-github")),
-              hintText: 'Please enter your ID.',
-              labelText: 'GitHub User ID',
-              helperText: ''),
-          controller: _textController,
-          validator: (value) {
-            if (value.isEmpty) return 'Required!';
-          },
-        )),
-        RaisedButton(
-          onPressed: () {
-            if (_formKey.currentState.validate()) {
-              FocusScope.of(context).requestFocus(FocusNode());
-              _refreshContribList(_textController.text);
-            }
-          },
-          child: Text('Submit!'),
-        ),
-      ],
-    );
+    return Row(children: [
+      Expanded(
+          child: TextFormField(
+        decoration: InputDecoration(
+            icon: Icon(Octicons.getIconData("mark-github")),
+            hintText: 'Please enter your ID.',
+            labelText: 'GitHub User ID',
+            helperText: ''),
+        controller: _textController,
+        validator: (value) {
+          if (value.isEmpty) return 'Required!';
+        },
+      )),
+      RaisedButton(
+        onPressed: () {
+          if (_formKey.currentState.validate()) {
+            FocusScope.of(context).requestFocus(FocusNode());
+            _refreshContribList(_textController.text);
+          }
+        },
+        child: Text('Submit!'),
+      )
+    ]);
   }
 
   Future<List<Contrib>> _getContribList(String userID) async {
