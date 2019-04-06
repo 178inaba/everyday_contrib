@@ -57,7 +57,7 @@ class ContribWidgetState extends State<ContribWidget> {
             if (_formKey.currentState.validate())
               _refreshContribList(_textController.text);
           },
-          child: Text('Submit'),
+          child: Text('Submit!'),
         ),
       ],
     );
