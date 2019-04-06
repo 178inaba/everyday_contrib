@@ -41,6 +41,7 @@ class ContribWidgetState extends State<ContribWidget> {
     return Row(children: [
       Expanded(
           child: TextFormField(
+        autofocus: true,
         decoration: InputDecoration(
             icon: Icon(Octicons.getIconData("mark-github")),
             hintText: 'Please enter your ID.',
