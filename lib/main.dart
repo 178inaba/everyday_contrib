@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -24,10 +25,9 @@ class ContribWidget extends StatefulWidget {
 }
 
 class ContribWidgetState extends State<ContribWidget> {
-  static final _promptMsg = 'Please enter your GitHub user id.';
   final _formKey = GlobalKey<FormState>();
   final _textController = TextEditingController();
-  Widget _contribSection = Center(child: Text(_promptMsg));
+  Widget _contribSection = Container();
 
   @override
   Widget build(BuildContext context) {
@@ -42,9 +42,13 @@ class ContribWidgetState extends State<ContribWidget> {
       children: [
         Expanded(
             child: TextFormField(
+          decoration: InputDecoration(
+              icon: Icon(Octicons.getIconData("mark-github")),
+              hintText: 'Please enter your ID.',
+              labelText: 'GitHub User ID'),
           controller: _textController,
           validator: (value) {
-            if (value.isEmpty) return _promptMsg;
+            if (value.isEmpty) return 'Required!';
           },
         )),
         RaisedButton(
