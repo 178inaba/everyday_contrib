@@ -51,17 +51,24 @@ class ContribWidgetState extends State<ContribWidget> {
         validator: (value) {
           if (value.isEmpty) return 'Required!';
         },
+        onEditingComplete: () {
+          _submitID();
+        },
       )),
       RaisedButton(
         onPressed: () {
-          if (_formKey.currentState.validate()) {
-            FocusScope.of(context).requestFocus(FocusNode());
-            _refreshContribList(_textController.text);
-          }
+          _submitID();
         },
         child: Text('Submit!'),
       )
     ]);
+  }
+
+  void _submitID() {
+    if (_formKey.currentState.validate()) {
+      FocusScope.of(context).requestFocus(FocusNode());
+      _refreshContribList(_textController.text);
+    }
   }
 
   Future<List<Contrib>> _getContribList(String userID) async {
