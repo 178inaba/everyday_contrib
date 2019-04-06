@@ -54,8 +54,10 @@ class ContribWidgetState extends State<ContribWidget> {
         )),
         RaisedButton(
           onPressed: () {
-            if (_formKey.currentState.validate())
+            if (_formKey.currentState.validate()) {
+              FocusScope.of(context).requestFocus(FocusNode());
               _refreshContribList(_textController.text);
+            }
           },
           child: Text('Submit!'),
         ),
@@ -108,6 +110,8 @@ class ContribWidgetState extends State<ContribWidget> {
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () {
+              FocusScope.of(context).requestFocus(FocusNode());
+
               var contribCntStr = contribList[index].count.toString();
               if (contribList[index].count == 0) contribCntStr = 'no';
 
