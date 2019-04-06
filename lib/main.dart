@@ -45,7 +45,8 @@ class ContribWidgetState extends State<ContribWidget> {
           decoration: InputDecoration(
               icon: Icon(Octicons.getIconData("mark-github")),
               hintText: 'Please enter your ID.',
-              labelText: 'GitHub User ID'),
+              labelText: 'GitHub User ID',
+              helperText: ''),
           controller: _textController,
           validator: (value) {
             if (value.isEmpty) return 'Required!';
