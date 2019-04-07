@@ -12,10 +12,12 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        theme: ThemeData(primarySwatch: Colors.lightGreen),
-        home: Scaffold(
-            appBar: AppBar(title: Text('Everyday Contrib')),
-            body: ContribWidget()));
+      theme: ThemeData(primarySwatch: Colors.lightGreen),
+      home: Scaffold(
+        appBar: AppBar(title: Text('Everyday Contrib')),
+        body: ContribWidget(),
+      ),
+    );
   }
 }
 
