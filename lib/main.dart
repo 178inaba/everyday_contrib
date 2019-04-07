@@ -93,38 +93,42 @@ class ContribWidgetState extends State<ContribWidget> {
 
   GridView _getContribGrid(List<Contrib> contribList) {
     return GridView.builder(
-        gridDelegate:
-            SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 7),
-        itemCount: contribList.length,
-        itemBuilder: (context, index) {
-          return GestureDetector(
-            onTap: () {
-              FocusScope.of(context).requestFocus(FocusNode());
+      gridDelegate:
+          SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 7),
+      itemCount: contribList.length,
+      itemBuilder: (context, index) {
+        return GestureDetector(
+          onTap: () {
+            FocusScope.of(context).requestFocus(FocusNode());
 
-              var contribCntStr = contribList[index].count.toString();
-              if (contribList[index].count == 0) contribCntStr = 'no';
+            var contribCntStr = contribList[index].count.toString();
+            if (contribList[index].count == 0) contribCntStr = 'no';
 
-              var contribText = 'contribution';
-              if (contribList[index].count != 1) contribText += 's';
+            var contribText = 'contribution';
+            if (contribList[index].count != 1) contribText += 's';
 
-              final snackBarText = RichText(
-                  text: TextSpan(children: [
+            final snackBarText = RichText(
+              text: TextSpan(children: [
                 TextSpan(
-                    text: "$contribCntStr $contribText",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
+                  text: "$contribCntStr $contribText",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
                 TextSpan(
-                    text:
-                        " on ${DateFormat.yMMMd().format(contribList[index].date)}")
-              ]));
+                  text:
+                      " on ${DateFormat.yMMMd().format(contribList[index].date)}",
+                ),
+              ]),
+            );
 
-              var s = Scaffold.of(context);
-              s.hideCurrentSnackBar();
-              s.showSnackBar(SnackBar(content: snackBarText));
-            },
-            child: Container(
-                color: contribList[index].color, margin: EdgeInsets.all(3)),
-          );
-        });
+            var s = Scaffold.of(context);
+            s.hideCurrentSnackBar();
+            s.showSnackBar(SnackBar(content: snackBarText));
+          },
+          child: Container(
+              color: contribList[index].color, margin: EdgeInsets.all(3)),
+        );
+      },
+    );
   }
 
   Future<List<Contrib>> _getContribList(String userID) async {
