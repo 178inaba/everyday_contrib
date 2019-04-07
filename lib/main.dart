@@ -78,15 +78,16 @@ class ContribWidgetState extends State<ContribWidget> {
   void _refreshContribList(String userID) async {
     setState(() {
       _contribSection = FutureBuilder<List<Contrib>>(
-          future: _getContribList(userID),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) return Center(child: Text(snapshot.error));
+        future: _getContribList(userID),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) return Center(child: Text(snapshot.error));
 
-            if (snapshot.connectionState == ConnectionState.done)
-              return _getContribGrid(snapshot.data);
+          if (snapshot.connectionState == ConnectionState.done)
+            return _getContribGrid(snapshot.data);
 
-            return Center(child: CircularProgressIndicator());
-          });
+          return Center(child: CircularProgressIndicator());
+        },
+      );
     });
   }
 
@@ -128,11 +129,11 @@ class ContribWidgetState extends State<ContribWidget> {
 
   Future<List<Contrib>> _getContribList(String userID) async {
     final response =
-    await http.get("https://github-contributions-api.now.sh/v1/" + userID);
+        await http.get("https://github-contributions-api.now.sh/v1/" + userID);
     final contribJson =
-    jsonDecode(response.body)['contributions'].cast<Map<String, dynamic>>();
+        jsonDecode(response.body)['contributions'].cast<Map<String, dynamic>>();
     final contribList =
-    contribJson.map<Contrib>((json) => Contrib.fromJson(json)).toList();
+        contribJson.map<Contrib>((json) => Contrib.fromJson(json)).toList();
     final today = DateTime.now();
     contribList.removeWhere((Contrib item) => item.date.compareTo(today) > 0);
 
