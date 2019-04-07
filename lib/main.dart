@@ -42,27 +42,29 @@ class ContribWidgetState extends State<ContribWidget> {
   Row _idInputRow() {
     return Row(children: [
       Expanded(
-          child: TextFormField(
-        autofocus: true,
-        decoration: InputDecoration(
+        child: TextFormField(
+          autofocus: true,
+          decoration: InputDecoration(
             icon: Icon(Octicons.getIconData("mark-github")),
             hintText: 'Please enter your ID.',
             labelText: 'GitHub User ID',
-            helperText: ''),
-        controller: _textController,
-        validator: (value) {
-          if (value.isEmpty) return 'Required!';
-        },
-        onEditingComplete: () {
-          _submitID();
-        },
-      )),
+            helperText: '',
+          ),
+          controller: _textController,
+          validator: (value) {
+            if (value.isEmpty) return 'Required!';
+          },
+          onEditingComplete: () {
+            _submitID();
+          },
+        ),
+      ),
       RaisedButton(
         onPressed: () {
           _submitID();
         },
         child: Text('Submit!'),
-      )
+      ),
     ]);
   }
 
