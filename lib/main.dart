@@ -162,9 +162,9 @@ class Contrib {
 
   factory Contrib.fromJson(Map<String, dynamic> json) {
     return Contrib(
-        date: DateTime.parse(json['date']),
-        count: json['count'] as int,
-        color:
-            Color(int.parse(json['color'].replaceAll(RegExp(r'#'), '0xFF'))));
+      date: DateTime.parse(json['date']),
+      count: json['count'] as int,
+      color: Color(int.parse(json['color'].replaceAll(RegExp(r'#'), '0xFF'))),
+    );
   }
 }
