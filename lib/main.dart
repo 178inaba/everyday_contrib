@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +33,24 @@ class ContribWidgetState extends State<ContribWidget> {
   Widget _contribSection = Container();
 
   @override
+  initState() {
+    super.initState();
+    _initWidget();
+  }
+
+  _initWidget() async {
+    var prefs = await SharedPreferences.getInstance();
+    final id = prefs.getString('github_id');
+    if ([null, ''].contains(id)) return;
+
+    setState(() {
+      _textController.text = id;
+    });
+
+    _refreshContribList(id);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(children: [
       Form(key: _formKey, child: _idInputRow()),
@@ -54,28 +73,25 @@ class ContribWidgetState extends State<ContribWidget> {
           validator: (value) {
             if (value.isEmpty) return 'Required!';
           },
-          onEditingComplete: () {
-            _submitID();
-          },
+          onEditingComplete: () => _submitID(),
         ),
       ),
-      RaisedButton(
-        onPressed: () {
-          _submitID();
-        },
-        child: Text('Submit!'),
-      ),
+      RaisedButton(onPressed: () => _submitID(), child: Text('Submit!'))
     ]);
   }
 
-  void _submitID() {
-    if (_formKey.currentState.validate()) {
-      FocusScope.of(context).requestFocus(FocusNode());
-      _refreshContribList(_textController.text);
-    }
+  _submitID() async {
+    if (!_formKey.currentState.validate()) return;
+
+    FocusScope.of(context).requestFocus(FocusNode());
+
+    final id = _textController.text;
+    var prefs = await SharedPreferences.getInstance();
+    prefs.setString('github_id', id);
+    _refreshContribList(id);
   }
 
-  void _refreshContribList(String userID) async {
+  _refreshContribList(String userID) {
     setState(() {
       _contribSection = FutureBuilder<List<Contrib>>(
         future: _getContribList(userID),
@@ -97,47 +113,46 @@ class ContribWidgetState extends State<ContribWidget> {
           SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 7),
       itemCount: contribList.length,
       itemBuilder: (context, index) {
+        final c = contribList[index];
         return GestureDetector(
           onTap: () {
             FocusScope.of(context).requestFocus(FocusNode());
 
-            var contribCntStr = contribList[index].count.toString();
-            if (contribList[index].count == 0) contribCntStr = 'no';
-
-            var contribText = 'contribution';
-            if (contribList[index].count != 1) contribText += 's';
-
-            final snackBarText = RichText(
-              text: TextSpan(children: [
-                TextSpan(
-                  text: "$contribCntStr $contribText",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                TextSpan(
-                  text:
-                      " on ${DateFormat.yMMMd().format(contribList[index].date)}",
-                ),
-              ]),
-            );
-
-            var s = Scaffold.of(context);
+            final s = Scaffold.of(context);
             s.hideCurrentSnackBar();
-            s.showSnackBar(SnackBar(content: snackBarText));
+            s.showSnackBar(SnackBar(content: _getSnackBarText(c)));
           },
-          child: Container(
-              color: contribList[index].color, margin: EdgeInsets.all(3)),
+          child: Container(color: c.color, margin: EdgeInsets.all(3)),
         );
       },
+    );
+  }
+
+  RichText _getSnackBarText(Contrib c) {
+    var contribCntStr = c.count.toString();
+    if (c.count == 0) contribCntStr = 'no';
+
+    var contribText = 'contribution';
+    if (c.count != 1) contribText += 's';
+
+    return RichText(
+      text: TextSpan(children: [
+        TextSpan(
+          text: "$contribCntStr $contribText",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        TextSpan(text: " on ${DateFormat.yMMMd().format(c.date)}")
+      ]),
     );
   }
 
   Future<List<Contrib>> _getContribList(String userID) async {
     final response =
         await http.get("https://github-contributions-api.now.sh/v1/" + userID);
-    final contribJson =
-        jsonDecode(response.body)['contributions'].cast<Map<String, dynamic>>();
-    final contribList =
-        contribJson.map<Contrib>((json) => Contrib.fromJson(json)).toList();
+    final contribList = jsonDecode(response.body)['contributions']
+        .cast<Map<String, dynamic>>()
+        .map<Contrib>((json) => Contrib.fromJson(json))
+        .toList();
     final today = DateTime.now();
     contribList.removeWhere((Contrib item) => item.date.compareTo(today) > 0);
 
@@ -145,8 +160,7 @@ class ContribWidgetState extends State<ContribWidget> {
       var cnt = 6 - today.weekday;
       if (today.weekday == DateTime.sunday) cnt = 6;
 
-      final insertList = List<Contrib>.filled(cnt, Contrib());
-      contribList.insertAll(0, insertList);
+      contribList.insertAll(0, List<Contrib>.filled(cnt, Contrib()));
     }
 
     return contribList;
