@@ -96,21 +96,6 @@ class ContribWidgetState extends State<ContribWidget> {
     return contribList;
   }
 
-  void _refreshContribList(String userID) async {
-    setState(() {
-      _contribSection = FutureBuilder<List<Contrib>>(
-          future: _getContribList(userID),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) return Center(child: Text(snapshot.error));
-
-            if (snapshot.connectionState == ConnectionState.done)
-              return _getContribGrid(snapshot.data);
-
-            return Center(child: CircularProgressIndicator());
-          });
-    });
-  }
-
   GridView _getContribGrid(List<Contrib> contribList) {
     return GridView.builder(
         gridDelegate:
@@ -145,6 +130,21 @@ class ContribWidgetState extends State<ContribWidget> {
                 color: contribList[index].color, margin: EdgeInsets.all(3)),
           );
         });
+  }
+
+  void _refreshContribList(String userID) async {
+    setState(() {
+      _contribSection = FutureBuilder<List<Contrib>>(
+          future: _getContribList(userID),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) return Center(child: Text(snapshot.error));
+
+            if (snapshot.connectionState == ConnectionState.done)
+              return _getContribGrid(snapshot.data);
+
+            return Center(child: CircularProgressIndicator());
+          });
+    });
   }
 }
 
