@@ -5,7 +5,7 @@ Contribute to GitHub every day and enjoy the green!
 
 ## Screenshot
 
-![Screenshot](screenshot/screenshot.png)
+<img src="screenshot/screenshot.png" alt="Screenshot" height="640">
 
 ## Install
 
