@@ -1,5 +1,7 @@
 # Everyday Contrib
 
+This app displays your GitHub contribution graph.
+
 ## Screenshot
 
 ![Screenshot](screenshot/screenshot.png)
