@@ -1,5 +1,9 @@
 # Everyday Contrib
 
+## Screenshot
+
+![Screenshot](screenshot/screenshot.png)
+
 ## Install
 
 ```console
