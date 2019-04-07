@@ -7,6 +7,11 @@ Contribute to GitHub every day and enjoy the green!
 
 <img src="screenshot/screenshot.png" alt="Screenshot" height="640">
 
+## Usage
+
+Enter your GitHub user ID and press "Submit!"
+You will see your contribution graph!
+
 ## Install
 
 ```console
