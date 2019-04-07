@@ -9,7 +9,7 @@ Contribute to GitHub every day and enjoy the green!
 
 ## Usage
 
-Enter your GitHub user ID and press "Submit!"  
+Enter your **GitHub user ID** and press **"Submit!"**  
 You will see your contribution graph!
 
 ## Install
