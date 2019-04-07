@@ -1,5 +1,11 @@
 # Everyday Contrib
 
+## Install
+
+```console
+$ flutter run --release
+```
+
 ## License
 
 [MIT](LICENSE)
