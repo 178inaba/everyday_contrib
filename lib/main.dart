@@ -75,27 +75,6 @@ class ContribWidgetState extends State<ContribWidget> {
     }
   }
 
-  Future<List<Contrib>> _getContribList(String userID) async {
-    final response =
-        await http.get("https://github-contributions-api.now.sh/v1/" + userID);
-    final contribJson =
-        jsonDecode(response.body)['contributions'].cast<Map<String, dynamic>>();
-    final contribList =
-        contribJson.map<Contrib>((json) => Contrib.fromJson(json)).toList();
-    final today = DateTime.now();
-    contribList.removeWhere((Contrib item) => item.date.compareTo(today) > 0);
-
-    if (today.weekday != DateTime.saturday) {
-      var cnt = 6 - today.weekday;
-      if (today.weekday == DateTime.sunday) cnt = 6;
-
-      final insertList = List<Contrib>.filled(cnt, Contrib());
-      contribList.insertAll(0, insertList);
-    }
-
-    return contribList;
-  }
-
   void _refreshContribList(String userID) async {
     setState(() {
       _contribSection = FutureBuilder<List<Contrib>>(
@@ -145,6 +124,27 @@ class ContribWidgetState extends State<ContribWidget> {
                 color: contribList[index].color, margin: EdgeInsets.all(3)),
           );
         });
+  }
+
+  Future<List<Contrib>> _getContribList(String userID) async {
+    final response =
+    await http.get("https://github-contributions-api.now.sh/v1/" + userID);
+    final contribJson =
+    jsonDecode(response.body)['contributions'].cast<Map<String, dynamic>>();
+    final contribList =
+    contribJson.map<Contrib>((json) => Contrib.fromJson(json)).toList();
+    final today = DateTime.now();
+    contribList.removeWhere((Contrib item) => item.date.compareTo(today) > 0);
+
+    if (today.weekday != DateTime.saturday) {
+      var cnt = 6 - today.weekday;
+      if (today.weekday == DateTime.sunday) cnt = 6;
+
+      final insertList = List<Contrib>.filled(cnt, Contrib());
+      contribList.insertAll(0, insertList);
+    }
+
+    return contribList;
   }
 }
 
