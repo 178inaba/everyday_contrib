@@ -1,6 +1,7 @@
 # Everyday Contrib
 
-This app displays your GitHub contribution graph.
+This app displays your GitHub contribution graph.  
+Contribute to GitHub every day and enjoy the green!
 
 ## Screenshot
 
