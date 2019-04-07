@@ -78,10 +78,9 @@ class ContribWidgetState extends State<ContribWidget> {
         jsonDecode(response.body)['contributions'].cast<Map<String, dynamic>>();
     final contribList =
         contribJson.map<Contrib>((json) => Contrib.fromJson(json)).toList();
-    contribList
-        .removeWhere((Contrib item) => item.date.compareTo(DateTime.now()) > 0);
-
     final today = DateTime.now();
+    contribList.removeWhere((Contrib item) => item.date.compareTo(today) > 0);
+
     if (today.weekday != DateTime.saturday) {
       var cnt = 6 - today.weekday;
       if (today.weekday == DateTime.sunday) cnt = 6;
