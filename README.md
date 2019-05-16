@@ -5,7 +5,7 @@ Contribute to GitHub every day and enjoy the green!
 
 ## Screenshot
 
-<img src="screenshot/screenshot.png" alt="Screenshot" height="640">
+<img src="screenshots/screenshot.png" alt="Screenshot" height="640">
 
 ## Usage
 
